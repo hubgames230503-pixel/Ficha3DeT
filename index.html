@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ficha 3D&T Victory</title>
+
+<style>
+:root{
+  --tema:#f97316;
+}
+
+body{
+  font-family:Arial, sans-serif;
+  background:#020617;
+  color:#e5e7eb;
+  padding:14px;
+}
+
+/* HEADER */
+.header{
+  background:linear-gradient(135deg,#020617,#020617);
+  border:2px solid var(--tema);
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:16px;
+  box-shadow:0 0 18px color-mix(in srgb, var(--tema), transparent 60%);
+}
+
+.header-top{
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.avatar{
+  width:90px;
+  height:120px;
+  border-radius:12px;
+  background:#020617;
+  border:2px dashed var(--tema);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  overflow:hidden;
+  cursor:pointer;
+}
+
+.avatar img{
+  width:100%;
+  height:100%;
+  object-fit:cover;
+}
+
+.header input{
+  background:#020617;
+  color:white;
+  border:1px solid var(--tema);
+  border-radius:10px;
+  padding:8px;
+  width:100%;
+}
+
+.color{
+  margin-top:8px;
+}
+
+/* SECTIONS */
+.section{
+  border:2px solid var(--tema);
+  border-radius:16px;
+  padding:14px;
+  margin-bottom:14px;
+  box-shadow:0 0 12px color-mix(in srgb, var(--tema), transparent 75%);
+}
+
+.section h3{
+  margin:-28px 0 12px 0;
+  background:#020617;
+  display:inline-block;
+  padding:4px 10px;
+  border-radius:10px;
+  border:1px solid var(--tema);
+  font-size:15px;
+}
+
+/* INPUTS */
+input, textarea{
+  width:100%;
+  padding:8px;
+  border-radius:10px;
+  border:1px solid #1e293b;
+  background:#020617;
+  color:white;
+  margin-bottom:8px;
+}
+
+textarea{ min-height:70px; }
+
+/* BUTTONS */
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:12px;
+  font-size:16px;
+  cursor:pointer;
+}
+
+.salvar{ background:#22c55e; color:black; }
+.carregar{ background:#3b82f6; color:white; }
+
+small{ opacity:.7; display:block; margin-top:6px; }
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <div class="header-top">
+    <div class="avatar" onclick="document.getElementById('img').click()">
+      <span id="avatarTxt">IMG</span>
+      <img id="preview" style="display:none">
+    </div>
+
+    <div>
+      <input id="nome" placeholder="Nome do Personagem" value="Shiva Shinaba (Ban)">
+      <input id="pontos" placeholder="Pontos Totais" value="20">
+    </div>
+  </div>
+
+  <input class="color" type="color" value="#f97316" onchange="mudarTema(this.value)">
+</div>
+
+<input type="file" id="img" accept="image/*" style="display:none" onchange="carregarImg(event)">
+
+<!-- ATRIBUTOS -->
+<div class="section">
+<h3>Atributos</h3>
+<input id="poder" type="number" placeholder="Poder">
+<input id="habilidade" type="number" placeholder="Habilidade">
+<input id="resistencia" type="number" placeholder="Resistência">
+<input id="hp" type="number" placeholder="PV">
+<input id="mp" type="number" placeholder="PM">
+<input id="pp" type="number" placeholder="PP">
+</div>
+
+<div class="section">
+<h3>Perícias</h3>
+<textarea id="pericias">Misticismo</textarea>
+</div>
+
+<div class="section">
+<h3>Vantagens</h3>
+<textarea id="vantagens"></textarea>
+</div>
+
+<div class="section">
+<h3>Técnicas</h3>
+<textarea id="tecnicas"></textarea>
+</div>
+
+<div class="section">
+<h3>Arquétipo</h3>
+<input id="arquetipo">
+<textarea id="poderesArquetipo"></textarea>
+</div>
+
+<div class="section">
+<h3>Kit</h3>
+<input id="kit">
+<textarea id="kitPoderes"></textarea>
+</div>
+
+<div class="section">
+<h3>Desvantagens</h3>
+<textarea id="desvantagens"></textarea>
+</div>
+
+<div class="section">
+<button class="salvar" onclick="salvar()">💾 Salvar Ficha</button>
+<button class="carregar" onclick="document.getElementById('file').click()">📂 Carregar Ficha</button>
+<input type="file" id="file" style="display:none" onchange="carregar(event)">
+<small>Imagem + cores também são salvas</small>
+</div>
+
+<script>
+let imgData = "";
+
+function mudarTema(cor){
+  document.documentElement.style.setProperty('--tema', cor);
+}
+
+function carregarImg(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    imgData = reader.result;
+    preview.src = imgData;
+    preview.style.display = "block";
+    avatarTxt.style.display = "none";
+  }
+  reader.readAsDataURL(file);
+}
+
+function getFicha(){
+  return {
+    tema:getComputedStyle(document.documentElement).getPropertyValue('--tema'),
+    img:imgData,
+    nome:nome.value,
+    pontos:pontos.value,
+    poder:poder.value,
+    habilidade:habilidade.value,
+    resistencia:resistencia.value,
+    hp:hp.value,
+    mp:mp.value,
+    pp:pp.value,
+    pericias:pericias.value,
+    vantagens:vantagens.value,
+    tecnicas:tecnicas.value,
+    arquetipo:arquetipo.value,
+    poderesArquetipo:poderesArquetipo.value,
+    kit:kit.value,
+    kitPoderes:kitPoderes.value,
+    desvantagens:desvantagens.value
+  }
+}
+
+function salvar(){
+  const data = JSON.stringify(getFicha(),null,2);
+  const blob = new Blob([data],{type:"application/json"});
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = (nome.value||"ficha")+".json";
+  a.click();
+}
+
+function carregar(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = ()=>{
+    const d = JSON.parse(reader.result);
+    for(let k in d){
+      if(document.getElementById(k))
+        document.getElementById(k).value = d[k];
+    }
+    if(d.tema) mudarTema(d.tema);
+    if(d.img){
+      imgData = d.img;
+      preview.src = imgData;
+      preview.style.display="block";
+      avatarTxt.style.display="none";
+    }
+  }
+  reader.readAsText(file);
+}
+</script>
+
+</body>
+</html>
